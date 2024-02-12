@@ -27,5 +27,10 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<Review> reviews;
 
-    private RentalTransaction rentalTransaction;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private EigarUser user;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<RentalTransaction> rentalTransactions;
 }
