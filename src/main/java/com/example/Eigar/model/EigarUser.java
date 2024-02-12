@@ -3,6 +3,8 @@ package com.example.Eigar.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table
 @AllArgsConstructor
@@ -26,5 +28,12 @@ public class EigarUser {
     private String Address;
     private UserType userType;
 
+    @OneToMany(mappedBy = "user")
+    private List<Item> items;
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews;
+
+    @OneToOne(mappedBy = "user")
     private Identification identification;
 }
