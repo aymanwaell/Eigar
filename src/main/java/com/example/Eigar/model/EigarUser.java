@@ -25,4 +25,6 @@ public class EigarUser {
     private String phone;
     private String Address;
     private UserType userType;
+
+    private Identification identification;
 }
