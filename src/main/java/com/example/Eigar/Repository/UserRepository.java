@@ -1,4 +1,7 @@
 package com.example.Eigar.Repository;
 
-public class UserRepository {
+import com.example.Eigar.model.EigarUser;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<EigarUser,Long> {
 }
