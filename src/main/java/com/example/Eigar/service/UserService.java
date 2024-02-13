@@ -7,6 +7,8 @@ import com.example.Eigar.model.EigarUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,18 @@ public class UserService {
             throw e; // Re-throw UserNotFoundException as is
         } catch (Exception e) {
             throw new UserServiceException("Error while fetching user by ID", e);
+        }
+    }
+
+    public List<EigarUser> getUsers() {
+            return userRepository.findAll();
+    }
+
+    public EigarUser registerNewUser(EigarUser newUser) throws UserServiceException {
+        try {
+            return userRepository.save(newUser);
+        } catch (Exception e) {
+            throw new UserServiceException("Error while registering new user", e);
         }
     }
 }
