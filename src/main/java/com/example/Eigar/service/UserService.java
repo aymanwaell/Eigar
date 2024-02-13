@@ -22,7 +22,7 @@ public class UserService {
             return userRepository.findById(userId)
                     .orElseThrow(() -> new UserNotFoundException("User not found"));
         } catch (UserNotFoundException e) {
-            throw e; // Re-throw UserNotFoundException as is
+            throw e;
         } catch (Exception e) {
             throw new UserServiceException("Error while fetching user by ID", e);
         }
