@@ -35,7 +35,7 @@ public class ItemResponse {
 
     public static ItemResponse notFound(String message){
         ItemResponse response = new ItemResponse();
-        response.setStatus("error");
+        response.setStatus("not_found");
         response.setMessage(message);
         return response;
     }

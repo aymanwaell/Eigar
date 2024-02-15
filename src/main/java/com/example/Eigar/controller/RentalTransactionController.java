@@ -1,6 +1,8 @@
 package com.example.Eigar.controller;
 
+import com.example.Eigar.exception.ItemNotFoundException;
 import com.example.Eigar.exception.RentalTransactionNotFoundException;
+import com.example.Eigar.exception.UserNotFoundException;
 import com.example.Eigar.model.RentalTransaction;
 import com.example.Eigar.response.ItemResponse;
 import com.example.Eigar.response.RentalTransactionResponse;
@@ -8,10 +10,7 @@ import com.example.Eigar.service.RentalTransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +45,35 @@ public class RentalTransactionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RentalTransactionResponse.notFound("Rental Transaction not found"));
         } catch (Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RentalTransactionResponse.error("Internal Server Error"));
+        }
+    }
+    @PostMapping("/request/{itemId}/{renterId}")
+    public ResponseEntity<RentalTransactionResponse> requestRentalTransaction(
+            @PathVariable long itemId,
+            @PathVariable long renterId) {
+        try {
+            RentalTransaction transaction = rentalTransactionService.requestRentalTransaction(itemId, renterId);
+            return ResponseEntity.ok(RentalTransactionResponse.success(transaction));
+        } catch (ItemNotFoundException | UserNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RentalTransactionResponse.notFound(ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(RentalTransactionResponse.error("Internal Server Error"));
+        }
+    }
+
+    @PostMapping("/respond/{transactionId}/{response}")
+    public ResponseEntity<RentalTransactionResponse> respondToRentalRequest(
+            @PathVariable long transactionId,
+            @PathVariable String response) {
+        try {
+            RentalTransaction transaction = rentalTransactionService.respondToRentalRequest(transactionId, response);
+            return ResponseEntity.ok(RentalTransactionResponse.success(transaction));
+        } catch (RentalTransactionNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RentalTransactionResponse.notFound(ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(RentalTransactionResponse.error("Internal Server Error"));
         }
     }
 }

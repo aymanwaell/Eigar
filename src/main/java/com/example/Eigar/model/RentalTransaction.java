@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-
 public class RentalTransaction {
 
     @Id
@@ -24,8 +23,12 @@ public class RentalTransaction {
     private RentalStatus rentalStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private EigarUser user;
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "renter_id")
+    private Renter renter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")

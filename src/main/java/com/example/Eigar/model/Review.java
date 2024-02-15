@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-
 public class Review {
 
     @Id
@@ -24,8 +23,8 @@ public class Review {
     private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private EigarUser user;
+    @JoinColumn(name = "renter_id") // Change to renter_id
+    private Renter renter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
