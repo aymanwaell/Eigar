@@ -18,14 +18,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     public EigarUser getUserById(Long userId) throws UserNotFoundException, UserServiceException {
-        try {
             return userRepository.findById(userId)
                     .orElseThrow(() -> new UserNotFoundException("User not found"));
-        } catch (UserNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new UserServiceException("Error while fetching user by ID", e);
-        }
     }
 
     public List<EigarUser> getUsers() {
