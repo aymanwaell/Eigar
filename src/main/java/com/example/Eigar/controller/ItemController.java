@@ -23,7 +23,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Item>> getAllItems() {
+    public ResponseEntity<List<Item>> getAllItems()
+    {
         return ResponseEntity.ok(itemService.getAllItems());
     }
     @GetMapping("/{itemId}")
