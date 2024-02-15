@@ -4,7 +4,10 @@ import com.example.Eigar.Repository.ItemRepository;
 import com.example.Eigar.exception.ItemNotFoundException;
 import com.example.Eigar.exception.ItemServiceException;
 import com.example.Eigar.model.Item;
+import com.example.Eigar.response.ItemResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,5 +33,14 @@ public class ItemService {
         } catch (Exception ex){
             throw new ItemServiceException("Error while registering new item", ex);
         }
+    }
+
+    public ResponseEntity<ItemResponse> deleteItemById(long itemId) {
+        if (!itemRepository.existsById(itemId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ItemResponse.notFound("Item not found"));
+        }
+
+        itemRepository.deleteById(itemId);
+        return ResponseEntity.ok(ItemResponse.success("Item deleted successfully"));
     }
 }

@@ -34,7 +34,7 @@ public class UserController {
     }
     @GetMapping("/all")
     public ResponseEntity<List<EigarUser>> getUsers(){
-        return new ResponseEntity<>(userService.getUsers(), HttpStatus.FOUND);
+        return ResponseEntity.ok(userService.getUsers());
     }
     @PostMapping("register-new-user")
     public ResponseEntity<UserResponse> registerNewUser(@RequestBody EigarUser newUser){

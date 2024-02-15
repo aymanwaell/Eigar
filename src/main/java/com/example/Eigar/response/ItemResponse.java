@@ -19,6 +19,12 @@ public class ItemResponse {
         response.setData(data);
         return response;
     }
+    public static ItemResponse success(String message){
+        ItemResponse response = new ItemResponse();
+        response.setStatus("success");
+        response.setMessage(message);
+        return response;
+    }
 
     public static ItemResponse error(String message){
         ItemResponse response = new ItemResponse();
