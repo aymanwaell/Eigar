@@ -1,6 +1,8 @@
 package com.example.Eigar.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -15,14 +17,15 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties({"items", "rentalTransactions"})
 public class Owner extends EigarUser {
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore  // Add this annotation to break the infinite loop during serialization
+    @JsonIgnore
     private List<Item> items;
 
     @OneToMany(mappedBy = "owner")
-    @JsonIgnore
+    @JsonBackReference
     private List<RentalTransaction> rentalTransactions;
 
 

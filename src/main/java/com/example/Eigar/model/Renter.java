@@ -1,5 +1,7 @@
 package com.example.Eigar.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -15,10 +17,11 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties({"rentalTransactions", "reviews"})
 public class Renter extends EigarUser {
 
     @OneToMany(mappedBy = "renter")
-    @JsonManagedReference // Use this annotation to break the circular reference
+    @JsonBackReference
     private List<RentalTransaction> rentalTransactions;
 
     @OneToMany(mappedBy = "renter")

@@ -1,9 +1,9 @@
 package com.example.Eigar.model;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 
 @Entity
 @Table

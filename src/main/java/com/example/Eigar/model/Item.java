@@ -1,5 +1,7 @@
 package com.example.Eigar.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +15,7 @@ import java.util.List;
 @Setter
 @ToString
 
+@JsonIgnoreProperties({"rentalTransactions"})
 public class Item {
 
     @Id
@@ -31,6 +34,7 @@ public class Item {
     @JoinColumn(name = "user_id")
     private EigarUser user;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToMany(mappedBy = "item")
     private List<RentalTransaction> rentalTransactions;
 }

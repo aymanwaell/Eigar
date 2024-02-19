@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -36,17 +37,19 @@ public class RentalTransactionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
+
     @GetMapping("/{transactionId}")
-    public ResponseEntity<RentalTransactionResponse> getRentalTransactionById(@PathVariable long transactionId){
+    public ResponseEntity<RentalTransactionResponse> getRentalTransactionById(@PathVariable long transactionId) {
         try {
             RentalTransaction transaction = rentalTransactionService.getRentalTransactionById(transactionId);
             return ResponseEntity.ok(RentalTransactionResponse.success(transaction));
-        } catch (RentalTransactionNotFoundException ex){
+        } catch (RentalTransactionNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RentalTransactionResponse.notFound("Rental Transaction not found"));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RentalTransactionResponse.error("Internal Server Error"));
         }
     }
+
     @PostMapping("/request/{itemId}/{renterId}")
     public ResponseEntity<RentalTransactionResponse> requestRentalTransaction(
             @PathVariable long itemId,
@@ -61,7 +64,16 @@ public class RentalTransactionController {
                     .body(RentalTransactionResponse.error("Internal Server Error"));
         }
     }
-
+    @GetMapping("/owner-requests/{ownerId}")
+    public ResponseEntity<List<RentalTransaction>> getOwnerRequests(@PathVariable long ownerId) {
+        try {
+            List<RentalTransaction> ownerRequests = rentalTransactionService.getOwnerRequests(ownerId);
+            return ResponseEntity.ok(ownerRequests);
+        } catch (UserNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.emptyList()); // or handle the error accordingly
+        }
+    }
     @PostMapping("/respond/{transactionId}/{response}")
     public ResponseEntity<RentalTransactionResponse> respondToRentalRequest(
             @PathVariable long transactionId,

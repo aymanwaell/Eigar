@@ -1,6 +1,7 @@
 package com.example.Eigar.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class RentalTransaction {
 
     @Id
@@ -24,15 +26,16 @@ public class RentalTransaction {
     private RentalStatus rentalStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
-
-    @ManyToOne
     @JoinColumn(name = "renter_id")
-    @JsonBackReference // Use this annotation to break the circular reference
+    @JsonBackReference
     private Renter renter;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+
+    @JsonManagedReference
+    @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
 }
