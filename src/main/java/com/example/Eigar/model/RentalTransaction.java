@@ -1,5 +1,6 @@
 package com.example.Eigar.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,8 +27,9 @@ public class RentalTransaction {
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "renter_id")
+    @JsonBackReference // Use this annotation to break the circular reference
     private Renter renter;
 
     @ManyToOne(fetch = FetchType.LAZY)

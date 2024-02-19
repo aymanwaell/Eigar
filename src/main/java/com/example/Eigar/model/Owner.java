@@ -22,6 +22,7 @@ public class Owner extends EigarUser {
     private List<Item> items;
 
     @OneToMany(mappedBy = "owner")
+    @JsonIgnore
     private List<RentalTransaction> rentalTransactions;
 
 
