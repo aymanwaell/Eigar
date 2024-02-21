@@ -24,7 +24,4 @@ public class Renter extends EigarUser {
     @JsonBackReference
     private List<RentalTransaction> rentalTransactions;
 
-    @OneToMany(mappedBy = "renter")
-    private List<Review> reviews;
-
 }

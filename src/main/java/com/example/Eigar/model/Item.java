@@ -26,9 +26,6 @@ public class Item {
     private ItemType itemType;
     private boolean availabilityStatus;
 
-    @OneToMany(mappedBy = "item")
-    private List<Review> reviews;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private EigarUser user;

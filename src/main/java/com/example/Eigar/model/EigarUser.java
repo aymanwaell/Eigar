@@ -27,6 +27,4 @@ public abstract class EigarUser {
     private String address;
     private UserType userType;
 
-    @OneToOne(mappedBy = "user")
-    private Identification identification;
 }
