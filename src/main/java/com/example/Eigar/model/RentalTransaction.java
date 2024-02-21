@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,4 +38,7 @@ public class RentalTransaction {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @Column(name = "price")
+    private BigDecimal price;
 }

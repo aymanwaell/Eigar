@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,7 @@ public class Item {
     private String description;
     private ItemType itemType;
     private boolean availabilityStatus;
+    private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

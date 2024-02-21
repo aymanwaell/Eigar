@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
-
 public class ItemController {
 
     private final ItemService itemService;
@@ -46,15 +45,12 @@ public class ItemController {
     @PostMapping("/create/{userId}")
     public ResponseEntity<ItemResponse> addNewItem(@RequestBody Item newItem, @PathVariable long userId) {
         try {
-            // Check if the user is an Owner
             EigarUser user = userService.getUserById(userId);
 
             if (user instanceof Owner) {
-                // If the user is an Owner, proceed with adding the item
                 Item createdItem = itemService.addNewItem(newItem, userId);
                 return ResponseEntity.ok(ItemResponse.success(createdItem));
             } else {
-                // If the user is not an Owner (e.g., Renter), deny the request
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(ItemResponse.error("You cannot add an item as a Renter"));
             }

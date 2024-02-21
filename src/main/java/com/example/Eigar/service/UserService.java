@@ -17,7 +17,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
 public class UserService {
 
     private final UserRepository userRepository;
@@ -35,7 +34,6 @@ public class UserService {
 
     public EigarUser registerNewUser(EigarUser newUser, UserType userType) throws UserServiceException {
         try {
-            // Set the user type before saving the user
             newUser.setUserType(userType);
             return userRepository.save(newUser);
         } catch (Exception e) {
@@ -45,7 +43,6 @@ public class UserService {
 
     public Renter registerNewUser(Renter newRenter, UserType userType) throws UserServiceException {
         try {
-            // Set the user type before saving the user
             newRenter.setUserType(userType);
             return renterRepository.save(newRenter);
         } catch (Exception e) {
@@ -55,13 +52,10 @@ public class UserService {
 
     public Owner registerNewUser(Owner newOwner, UserType userType) throws UserServiceException {
         try {
-            // Set the user type before saving the user
             newOwner.setUserType(userType);
             return ownerRepository.save(newOwner);
         } catch (Exception e) {
             throw new UserServiceException("Error while registering new Owner user", e);
         }
     }
-
 }
-

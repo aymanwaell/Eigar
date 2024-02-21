@@ -3,17 +3,14 @@ package com.example.Eigar.service;
 import com.example.Eigar.exception.ItemNotFoundException;
 import com.example.Eigar.exception.RentalTransactionNotFoundException;
 import com.example.Eigar.exception.UserNotFoundException;
-import com.example.Eigar.model.RentalStatus;
-import com.example.Eigar.model.RentalTransaction;
-import com.example.Eigar.model.Item;
-import com.example.Eigar.model.Owner;
-import com.example.Eigar.model.Renter;
+import com.example.Eigar.model.*;
 import com.example.Eigar.Repository.RentalTransactionRepository;
 import com.example.Eigar.Repository.ItemRepository;
 import com.example.Eigar.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -24,16 +21,8 @@ public class RentalTransactionService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    public List<RentalTransaction> getAllRentalTransactions() {
-        return rentalTransactionRepository.findAll();
-    }
-
-    public RentalTransaction getRentalTransactionById(long transactionId) throws RentalTransactionNotFoundException {
-        return rentalTransactionRepository.findById(transactionId)
-                .orElseThrow(() -> new RentalTransactionNotFoundException("Rental Transaction not found"));
-    }
-
-    public RentalTransaction requestRentalTransaction(long itemId, long renterId) throws ItemNotFoundException, UserNotFoundException {
+    public RentalTransaction requestRentalTransaction(long itemId, long renterId)
+            throws ItemNotFoundException, UserNotFoundException {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException("Item not found"));
 
@@ -51,28 +40,25 @@ public class RentalTransactionService {
                 })
                 .orElseThrow(() -> new UserNotFoundException("Renter not found"));
 
-        // Create a new transaction
+        BigDecimal itemPrice = item.getPrice(); // Assuming there is a getPrice() method in the Item class
+
         RentalTransaction newTransaction = new RentalTransaction();
         newTransaction.setItem(item);
         newTransaction.setRenter(renter);
+        newTransaction.setPrice(itemPrice); // Set the item price to the RentalTransaction
 
-        // Set the owner information
-        Owner owner = (Owner) item.getUser(); // Assuming the Item has a 'getUser()' method
+        Owner owner = (Owner) item.getUser();
         newTransaction.setOwner(owner);
 
-        // Set the initial status
         newTransaction.setRentalStatus(RentalStatus.PENDING);
 
-        // Save the transaction
         RentalTransaction savedTransaction = rentalTransactionRepository.save(newTransaction);
 
-        // Add the transaction to the owner's list of transactions
         owner.getRentalTransactions().add(savedTransaction);
         userRepository.save(owner);
 
         return savedTransaction;
     }
-
 
     public List<RentalTransaction> getOwnerRequests(long ownerId) throws UserNotFoundException {
         Owner owner = userRepository.findById(ownerId)
@@ -92,16 +78,59 @@ public class RentalTransactionService {
         return rentalTransactionRepository.findByOwnerAndRentalStatus(owner, RentalStatus.PENDING);
     }
 
-    public RentalTransaction respondToRentalRequest(long transactionId, String response) throws RentalTransactionNotFoundException {
-        RentalTransaction transaction = rentalTransactionRepository.findById(transactionId)
-                .orElseThrow(() -> new RentalTransactionNotFoundException("Rental Transaction not found"));
+    public RentalTransaction respondToRentalRequest(long transactionId, String response)
+            throws RentalTransactionNotFoundException {
+        try {
+            RentalTransaction transaction = rentalTransactionRepository.findById(transactionId)
+                    .orElseThrow(() -> new RentalTransactionNotFoundException("Rental Transaction not found"));
 
-        if (response.equalsIgnoreCase("accept")) {
-            transaction.setRentalStatus(RentalStatus.ACCEPTED);
-        } else if (response.equalsIgnoreCase("deny")) {
-            transaction.setRentalStatus(RentalStatus.CANCELED);
+            if (response.equalsIgnoreCase("accept")) {
+                transaction.setRentalStatus(RentalStatus.ACCEPTED);
+                updateOwnerGains(transaction);
+            } else if (response.equalsIgnoreCase("deny")) {
+                transaction.setRentalStatus(RentalStatus.CANCELED);
+            }
+
+            return rentalTransactionRepository.save(transaction);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    private void updateOwnerGains(RentalTransaction transaction) {
+        Owner owner = transaction.getOwner();
+        BigDecimal ownerGains = owner.getGains();
+
+        if (ownerGains == null) {
+            ownerGains = BigDecimal.ZERO;
         }
 
-        return rentalTransactionRepository.save(transaction);
+        BigDecimal transactionPrice = transaction.getPrice();
+        ownerGains = ownerGains.add(transactionPrice);
+        owner.setGains(ownerGains);
+        userRepository.save(owner);
+        System.out.println("Owner Gains updated. New total gains: " + ownerGains);
+    }
+
+    public List<RentalTransaction> getUserTransactions(long userId) throws UserNotFoundException {
+        EigarUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (user instanceof Owner) {
+            return rentalTransactionRepository.findByOwner((Owner) user);
+        } else if (user instanceof Renter) {
+            return rentalTransactionRepository.findByRenter((Renter) user);
+        } else {
+            throw new IllegalArgumentException("User type not supported");
+        }
+    }
+    public BigDecimal getOwnerGains(long ownerId) throws UserNotFoundException {
+        Owner owner = userRepository.findById(ownerId)
+                .filter(user -> user instanceof Owner)
+                .map(user -> (Owner) user)
+                .orElseThrow(() -> new UserNotFoundException("Owner not found"));
+
+        return owner.getGains();
     }
 }

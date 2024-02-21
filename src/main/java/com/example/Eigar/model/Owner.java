@@ -8,6 +8,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -23,5 +24,5 @@ public class Owner extends EigarUser {
     @OneToMany(mappedBy = "owner")
     private List<RentalTransaction> rentalTransactions;
 
-
+    private BigDecimal gains;
 }
