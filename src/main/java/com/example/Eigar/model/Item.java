@@ -1,8 +1,11 @@
 package com.example.Eigar.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -11,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 
+@JsonIgnoreProperties({"rentalTransactions"})
 public class Item {
 
     @Id
@@ -23,14 +26,13 @@ public class Item {
     private String description;
     private ItemType itemType;
     private boolean availabilityStatus;
-
-    @OneToMany(mappedBy = "item")
-    private List<Review> reviews;
+    private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private EigarUser user;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToMany(mappedBy = "item")
     private List<RentalTransaction> rentalTransactions;
 }

@@ -1,9 +1,9 @@
 package com.example.Eigar.model;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 
 @Entity
 @Table
@@ -12,8 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-
-public class EigarUser {
+public abstract class EigarUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,15 +24,7 @@ public class EigarUser {
     private String firstName;
     private String lastName;
     private String phone;
-    private String Address;
+    private String address;
     private UserType userType;
 
-    @OneToMany(mappedBy = "user")
-    private List<Item> items;
-
-    @OneToMany(mappedBy = "user")
-    private List<Review> reviews;
-
-    @OneToOne(mappedBy = "user")
-    private Identification identification;
 }

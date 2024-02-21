@@ -1,8 +1,11 @@
 package com.example.Eigar.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,8 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
-
+@EqualsAndHashCode
 public class RentalTransaction {
 
     @Id
@@ -24,10 +26,19 @@ public class RentalTransaction {
     private RentalStatus rentalStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private EigarUser user;
+    @JoinColumn(name = "renter_id")
+    @JsonBackReference
+    private Renter renter;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+
+    @JsonManagedReference
+    @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
+
+    @Column(name = "price")
+    private BigDecimal price;
 }
