@@ -16,16 +16,13 @@ import java.util.List;
 @Table
 @Getter
 @Setter
-@ToString
 @JsonIgnoreProperties({"items", "rentalTransactions"})
 public class Owner extends EigarUser {
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private List<Item> items;
 
     @OneToMany(mappedBy = "owner")
-    @JsonBackReference
     private List<RentalTransaction> rentalTransactions;
 
 

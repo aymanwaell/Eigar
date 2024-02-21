@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode
 public class RentalTransaction {
 

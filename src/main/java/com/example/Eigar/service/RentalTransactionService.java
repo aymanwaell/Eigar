@@ -51,13 +51,28 @@ public class RentalTransactionService {
                 })
                 .orElseThrow(() -> new UserNotFoundException("Renter not found"));
 
+        // Create a new transaction
         RentalTransaction newTransaction = new RentalTransaction();
         newTransaction.setItem(item);
         newTransaction.setRenter(renter);
+
+        // Set the owner information
+        Owner owner = (Owner) item.getUser(); // Assuming the Item has a 'getUser()' method
+        newTransaction.setOwner(owner);
+
+        // Set the initial status
         newTransaction.setRentalStatus(RentalStatus.PENDING);
 
-        return rentalTransactionRepository.save(newTransaction);
+        // Save the transaction
+        RentalTransaction savedTransaction = rentalTransactionRepository.save(newTransaction);
+
+        // Add the transaction to the owner's list of transactions
+        owner.getRentalTransactions().add(savedTransaction);
+        userRepository.save(owner);
+
+        return savedTransaction;
     }
+
 
     public List<RentalTransaction> getOwnerRequests(long ownerId) throws UserNotFoundException {
         Owner owner = userRepository.findById(ownerId)

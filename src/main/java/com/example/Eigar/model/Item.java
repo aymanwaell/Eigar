@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 
 @JsonIgnoreProperties({"rentalTransactions"})
 public class Item {

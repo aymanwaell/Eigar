@@ -1,8 +1,12 @@
 package com.example.Eigar.controller;
 
+import com.example.Eigar.Repository.RentalTransactionRepository;
+import com.example.Eigar.Repository.UserRepository;
 import com.example.Eigar.exception.ItemNotFoundException;
 import com.example.Eigar.exception.RentalTransactionNotFoundException;
 import com.example.Eigar.exception.UserNotFoundException;
+import com.example.Eigar.model.Owner;
+import com.example.Eigar.model.RentalStatus;
 import com.example.Eigar.model.RentalTransaction;
 import com.example.Eigar.response.ItemResponse;
 import com.example.Eigar.response.RentalTransactionResponse;
@@ -22,6 +26,8 @@ import java.util.List;
 public class RentalTransactionController {
 
     private final RentalTransactionService rentalTransactionService;
+    private final RentalTransactionRepository rentalTransactionRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllRentalTransactions() {
@@ -65,15 +71,11 @@ public class RentalTransactionController {
         }
     }
     @GetMapping("/owner-requests/{ownerId}")
-    public ResponseEntity<List<RentalTransaction>> getOwnerRequests(@PathVariable long ownerId) {
-        try {
-            List<RentalTransaction> ownerRequests = rentalTransactionService.getOwnerRequests(ownerId);
-            return ResponseEntity.ok(ownerRequests);
-        } catch (UserNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.emptyList()); // or handle the error accordingly
-        }
+    public ResponseEntity<List<RentalTransaction>> getOwnerRequests(@PathVariable long ownerId) throws UserNotFoundException {
+        List<RentalTransaction> transactions = rentalTransactionService.getOwnerRequests(ownerId);
+        return ResponseEntity.ok(transactions);
     }
+
     @PostMapping("/respond/{transactionId}/{response}")
     public ResponseEntity<RentalTransactionResponse> respondToRentalRequest(
             @PathVariable long transactionId,
